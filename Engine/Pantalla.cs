@@ -2,18 +2,21 @@
 using System.Threading;
 using static System.ConsoleColor;
 
-namespace Snake
+namespace Engine
 {
-    class Pantalla
+    public class Pantalla
     {
         public Pixel[,] pixeles;
         public int alto, ancho;
 
-        public Pantalla()
+        public Pantalla(int width, int height)
         {
-            alto = Console.WindowHeight-1;
-            ancho = Console.WindowWidth;
-            Console.BufferHeight = alto+1;
+            alto = height;
+            ancho = width;
+            Console.WindowHeight = alto + 1;
+            Console.WindowWidth = ancho + 1;
+            Console.BufferHeight = alto + 1;
+            Console.BufferWidth = ancho + 1;
 
             pixeles = new Pixel[alto, ancho];
             
@@ -40,8 +43,7 @@ namespace Snake
                         Console.ForegroundColor = pixeles[i, j].cLetra;
                         Console.SetCursorPosition(j, i);
                         Console.Write(pixeles[i, j].letra);
-                        pixeles[i, j].activo = false;
-                        
+                        pixeles[i, j].activo = false;                        
                     }
                 }
             }
@@ -53,7 +55,7 @@ namespace Snake
         {
             int x = posicion.x;
             int y = posicion.y;
-            pixeles[y, x].activo = px.activo;
+            pixeles[y, x].activo = true;
             pixeles[y, x].cFondo = px.cFondo;
             pixeles[y, x].cLetra = px.cLetra;
             pixeles[y, x].letra = px.letra;
@@ -62,7 +64,7 @@ namespace Snake
         // Edita la informacion de un pixel
         public void editPixel(int x, int y, Pixel px)
         {
-            pixeles[y, x].activo = px.activo;
+            pixeles[y, x].activo = true;
             pixeles[y, x].cFondo = px.cFondo;
             pixeles[y, x].cLetra = px.cLetra;
             pixeles[y, x].letra = px.letra;
@@ -131,6 +133,21 @@ namespace Snake
             dibujarRaya(new Point(pos_x, pos_y + sizey -1),      sizex,     'h', px); // piso
             dibujarRaya(new Point(pos_x, pos_y + 1),             sizey - 2, 'v', px); // pared izq
             dibujarRaya(new Point(pos_x + sizex - 1, pos_y + 1), sizey - 2, 'v', px); // pared der
+        }
+
+        public void dibujarRect(Rect rect, ConsoleColor color)
+        {
+            Pixel px = new Pixel(color);
+            for (int i = 0; i <= rect.height; i++) 
+            {
+                for (int j = 0; j <= rect.width; j++)
+                {
+                    if(i==0 || j==0 || i==rect.height || j == rect.width)
+                    {
+                        editPixel(new Point(rect.xMin + j, rect.yMin + i), px);
+                    }
+                }
+            }
         }
 
         public void dibujarRaya(Point origen, int longitud, char orientacion, Pixel px)

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Engine;
 using System.Threading;
-using static System.ConsoleColor;
 
 namespace Snake
 {
@@ -11,14 +7,12 @@ namespace Snake
     {
         static Pantalla scr;
         static Snake s;
-        static int speed;
 
         static void Setup()
         {
-            scr = new Pantalla();
-            s = new Snake(scr);
-            speed = 50;
-
+            s = new Snake();
+            scr = new Pantalla(s.gameArea.width + 2, s.gameArea.height + 2);
+            
             //borde            
             s.dibujarBorde(scr);
             s.updateComida(scr);
@@ -29,10 +23,10 @@ namespace Snake
             while (true)
             {
                 s.updateComida(scr);
-                s.mover();
+                s.accion();
                 s.update(scr);
                 scr.Update();
-                Thread.Sleep(speed);
+                Thread.Sleep(s.tick);
             }
         }
 
